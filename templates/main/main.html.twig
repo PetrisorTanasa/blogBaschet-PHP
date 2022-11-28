@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Stiri{% endblock %}
+
+{% block body %}
+    <style>
+        .item1 {
+            grid-area: myArea;
+        }
+        .item2 {
+            grid-area: myAREA;
+        }
+        .item3 {
+            grid-area: myAreA;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+                    "myArea myAREA"
+                    "myAreA myAREA";
+        }
+    </style>
+    <div style="height:100vh" class="grid-container">
+    <div  style="border-width: 2px;border-style: dashed;border-color: lightblue" class="item1"></div>
+    <div  style="border-width: 2px;border-style: dashed;border-color: lightblue" class="item2">
+        <ul>
+        <h5>Ultimele stiri din baschetul bucurestean</h5>
+            {% for stire in stiri %}
+                <div style = "border: 1px solid #000; width: 700px; word-break:break-all;"><li style="width:700px;height:100%"><a href="{{ path('app_watch',{"id" : stire.id}) }}"><div><h2>{{ stire.titlu }}</h2><br><h4>
+                                    {{ stire.rezumat }}</h4><br><h5>{{ stire.autor }}</h5></div></a><br>{% if nume is defined and rol is defined and (stire.autor == nume or rol == 2)%}<a href="{{ path('app_article_update',{"id":stire.id}) }}">Update</a><a href="{{ path('app_article_delete',{"id":stire.id}) }}">Delete</a>{% endif %}</li></div>
+            {% endfor %}
+        </ul>
+    </div>
+    <div  style="border-width: 2px;border-style: dashed;border-color: lightblue" class="item3"></div>
+    </div>
+{% endblock %}
