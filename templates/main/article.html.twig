@@ -26,7 +26,7 @@
                                     <h2 class="fw-bold mb-2 text-uppercase">{% if stire is defined %}Updateaza {% else %}Creeaza {% endif %}stirea</h2>
 
                                     <div class="form-outline form-white mb-4">
-                                        <input type="email" id="typeEmailX" name="titluArt" class="form-control form-control-lg" value="{%if stire is defined %}{{ stire.titlu }}{% endif %}"/>
+                                        <input id="typeEmailX" name="titluArt" class="form-control form-control-lg" value="{%if stire is defined %}{{ stire.titlu }}{% endif %}"/>
                                         <label class="form-label" for="typeEmailX">Titlu</label>
                                     </div>
 
