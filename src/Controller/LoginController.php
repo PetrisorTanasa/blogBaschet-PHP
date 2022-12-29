@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\Loader\Configurator;
 
-require_once('../public/phpmailer/mail_cod.php');
+require_once('..\..\public\phpmailer\mail_cod.php');
 
 class LoginController extends AbstractController
 {
