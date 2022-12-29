@@ -83,8 +83,6 @@ class LoginController extends AbstractController
                         "error" => 2
                         ]);
             }
-            $check = $this->accountRepository->findOneBy(array("mail"=>$_POST["typeEmailX"]));
-            if(!isset($check)) {
                 $newAccount = new Account();
                 $newAccount->setName($_POST["typeNameX"]);
                 $newAccount->setMail($_POST["typeEmailX"]);
@@ -92,7 +90,6 @@ class LoginController extends AbstractController
                 $newAccount->setRol(0);
                 $accountRepository->save($newAccount);
                 sendEmail($_POST["typeEmailX"], $_POST["typeNameX"], $_POST["typePasswordX"]);
-            }
         }
         return $this->redirectToRoute("app_login");
     }
@@ -116,10 +113,31 @@ class LoginController extends AbstractController
             return $this->render("main/main.html.twig", [
                 "nume" => $_SESSION["nume"],
                 "rol" => $_SESSION["rol"],
-                "stiri" => $stiri
+                "stiri" => array($stiri[0],$stiri[1])
             ]);
         }else{
             return $this->render("main/main.html.twig",[
+                "nume" => NULL,
+                "stiri" => array($stiri[0],$stiri[1])
+            ]);
+        }
+    }
+    #[Route('/stiri', name: 'app_stiri')]
+    public function Stiri(StiriRepository $stiriRepository): Response
+    {
+        try {
+            session_start();
+        } catch (\Exception $exception) {
+        }
+        $stiri = $stiriRepository->findAll();
+        if(isset($_SESSION["rol"]) and isset($_SESSION["nume"])) {
+            return $this->render("main/stiriView.html.twig", [
+                "nume" => $_SESSION["nume"],
+                "rol" => $_SESSION["rol"],
+                "stiri" => $stiri
+            ]);
+        }else{
+            return $this->render("main/stiriView.html.twig",[
                 "nume" => NULL,
                 "stiri" => $stiri
             ]);
@@ -131,7 +149,6 @@ class LoginController extends AbstractController
         try {
             session_start();
         }catch(\Exception $exception){}
-        var_dump($_SESSION);
         if(isset($_SESSION["rol"]) and ($_SESSION["rol"] == 1 or $_SESSION["rol"] == 2)){
             return $this->render('main/article.html.twig'
                 , [
@@ -259,12 +276,13 @@ class LoginController extends AbstractController
         $stiri = $this->stiriRepository->findAll();
         for($i=2;$i<=count($stiri)+1;$i++){
             $sheet->setCellValue("A".$i, $stiri[$i-2]->getId());
-            $sheet->setCellValue("B".$i, $stiri[$i-2]->getRezumat());
-            $sheet->setCellValue("C".$i, $stiri[$i-2]->getText());
-            $sheet->setCellValue("D".$i, $stiri[$i-2]->getAutor());
-            $sheet->setCellValue("E".$i, $stiri[$i-2]->getPoza1());
-            $sheet->setCellValue("F".$i, $stiri[$i-2]->getPoza2());
-            $sheet->setCellValue("G".$i, $stiri[$i-2]->getPoza3());
+            $sheet->setCellValue("B".$i, $stiri[$i-2]->getTitlu());
+            $sheet->setCellValue("C".$i, $stiri[$i-2]->getRezumat());
+            $sheet->setCellValue("D".$i, $stiri[$i-2]->getText());
+            $sheet->setCellValue("E".$i, $stiri[$i-2]->getAutor());
+            $sheet->setCellValue("F".$i, $stiri[$i-2]->getPoza1());
+            $sheet->setCellValue("G".$i, $stiri[$i-2]->getPoza2());
+            $sheet->setCellValue("H".$i, $stiri[$i-2]->getPoza3());
         }
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $fileName = 'stiri.xlsx';
@@ -283,17 +301,15 @@ class LoginController extends AbstractController
             $row_range    = range( 2, $row_limit );
             $data = array();
             foreach ( $row_range as $row ) {
-                $check = $this->stiriRepository->findOneBy(array("id" =>  $sheet->getCell( 'A' . $row )->getValue()));
-                if(isset($check)){
-                    continue;
-                }
                 $stire = new Stiri();
                 $stire->setTitlu($sheet->getCell( 'B' . $row )->getValue());
                 $stire->setRezumat($sheet->getCell( 'C' . $row )->getValue());
                 $stire->setText($sheet->getCell( 'D' . $row )->getValue());
-                $stire->setPoza1($sheet->getCell( 'E' . $row )->getValue());
-                $stire->setPoza2($sheet->getCell( 'F' . $row )->getValue());
-                $stire->setPoza3($sheet->getCell( 'G' . $row )->getValue());
+                $stire->setAutor($sheet->getCell( 'E' . $row )->getValue());
+                $stire->setPoza1($sheet->getCell( 'F' . $row )->getValue());
+                $stire->setPoza2($sheet->getCell( 'G' . $row )->getValue());
+                $stire->setPoza3($sheet->getCell( 'H' . $row )->getValue());
+                var_dump($stire);
                 $this->stiriRepository->save($stire);
             }
         } catch (Exception $e) {
