@@ -1,0 +1,43 @@
+{% block body %}
+    <b>CONFERINTA A</b><br>
+    <table>
+        <thead>
+        <tr>
+            <th class="place">#</th>
+            <th class="team">Echipa</th>
+            <th>MJ</th>
+            <th>V</th>
+            <th>Î</th>
+            <th class="points">TP</th>
+            <th>P</th>
+            <th class="form">Forma</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {% for echipa in confA %}
+                {{ echipa | raw }}
+    {% endfor %}
+    </table>
+<br><br>
+    <b>CONFERINTA B</b><br>
+    <table>
+        <thead>
+        <tr>
+            <th class="place">#</th>
+            <th class="team">Echipa</th>
+            <th>MJ</th>
+            <th>V</th>
+            <th>Î</th>
+            <th class="points">TP</th>
+            <th>P</th>
+            <th class="form">Forma</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {% for echipa in confB %}
+                {{ echipa | raw }}
+            {% endfor %}
+    </table>
+{% endblock %}

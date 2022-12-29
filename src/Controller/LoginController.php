@@ -7,13 +7,27 @@ use App\Entity\Stiri;
 use App\Repository\AccountRepository;
 use App\Repository\StiriRepository;
 use http\Client\Request;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\Loader\Configurator;
 
+require_once('../public/phpmailer/mail_cod.php');
+
 class LoginController extends AbstractController
 {
+    private AccountRepository $accountRepository;
+    private StiriRepository $stiriRepository;
+
+    public function __construct(AccountRepository $accountRepository, StiriRepository $stiriRepository){
+        $this->accountRepository = $accountRepository;
+        $this->stiriRepository = $stiriRepository;
+
+    }
     #[Route('/login', name: 'app_login')]
     public function login(AccountRepository $accountRepository): Response
     {
@@ -69,12 +83,16 @@ class LoginController extends AbstractController
                         "error" => 2
                         ]);
             }
-            $newAccount = new Account();
-            $newAccount -> setName($_POST["typeNameX"]);
-            $newAccount -> setMail($_POST["typeEmailX"]);
-            $newAccount -> setParola($_POST["typePasswordX"]);
-            $newAccount -> setRol(0);
-            $accountRepository -> save($newAccount);
+            $check = $this->accountRepository->findOneBy(array("mail"=>$_POST["typeEmailX"]));
+            if(!isset($check)) {
+                $newAccount = new Account();
+                $newAccount->setName($_POST["typeNameX"]);
+                $newAccount->setMail($_POST["typeEmailX"]);
+                $newAccount->setParola($_POST["typePasswordX"]);
+                $newAccount->setRol(0);
+                $accountRepository->save($newAccount);
+                sendEmail($_POST["typeEmailX"], $_POST["typeNameX"], $_POST["typePasswordX"]);
+            }
         }
         return $this->redirectToRoute("app_login");
     }
@@ -166,5 +184,122 @@ class LoginController extends AbstractController
     {
         $stiriRepository->remove($stiriRepository->find($request->get("id")));
         return $this->redirectToRoute('app_main');
+    }
+    #[Route('/clasament', name: 'app_clasament')]
+    public function teamRanks(){
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://baschet.ro/liga-nationala-de-baschet-masculin/clasament',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Cookie: XSRF-TOKEN=eyJpdiI6Ing0SjBKQ0cwQmxGVXh2VjcrU1orNWc9PSIsInZhbHVlIjoiQ1NGYWdhVzRjbEtkU0kxMVdlRm90MTdBK0ZNWUVaWGZHYTdQeXJmeitaWlVNNDN0Q1JRU0IzdThDRlZGV1JrViIsIm1hYyI6IjQxYjcyMTM1YjE1NGE4ODIzYzM2ZjEyZDA5NTJjYWMwZWE3MWRhZDAzMzUxM2I0YTRiOTAzN2ZlZWQ4NGIzZWUifQ%3D%3D; baschetro_session=eyJpdiI6IlYzdlJ5VzBoYmFNQ0g5TTBlZjdzQlE9PSIsInZhbHVlIjoibWVxYU1hQVlDUkxHc2RLUVlNUzROWXZ1VUdCZVh0QXBtSnVPdzVcL0hBNWU5OUVsQWxZTHdYQllqdGkrM1NkemQiLCJtYWMiOiI3ZmVhYzRmNTg0MDE5NjhlZmIyMTZiMjIyMDdkODUwNGFiM2ExMzBiMTkxZDFlM2QwNmNkZWVjYmYxOWE5YjU2In0%3D'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $response = explode('<td class="place">',$response);
+        $conferintaA = array();
+        for($i = 1; $i < 9; $i++){
+            $conferintaA[] = '<td>' . $response[$i];
+        }
+        $ultimaEchipa = explode('<div class="tab-pane fade" id="home">',$response[9]);
+        $conferintaA[] = '<td>' . $ultimaEchipa[0];
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://baschet.ro/liga-nationala-de-baschet-masculin/clasament?faza=1396&grupa=1884',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Cookie: XSRF-TOKEN=eyJpdiI6IkZcL29Kc09UcXpKMkp5VGp5S0h4NEVRPT0iLCJ2YWx1ZSI6IjUzOXNIQlNabERINHRoV2gxbCs3b0NqYTg5TzEwUXNMQ0tFa3VNVUZaeXJ3YUFcL29nR2NHM2p4NHQ0c25NUnhYIiwibWFjIjoiZWM2ZWIzMzkyMzFlYzVmNmRmYWZhZjJkNWQ1YzViYzBlYzlhZTYwNGY5M2NmNzJiNWFkMDc5MDFmZjg2MGQ3NiJ9; baschetro_session=eyJpdiI6IkxwWXB4ZktxeisrT201XC9YZjBxXC9Mdz09IiwidmFsdWUiOiJ1MDJ4ZHJcL0p0dHNUMlVcL0toNk9nSm5nMnpTVndTSWdMSGplMmtocDF4MmxQWHNoRzVcLzNnMGhYVU9TdU4xcmprIiwibWFjIjoiMDExYWMzZDllMDJhMTE5NmM4NTc1NGIyNDhmMDY1MzcwYTJlNGMyNDQ2MmU5ZWYzNmZmNTFmODE1NzRjNGNjZCJ9'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $response = explode('<td class="place">',$response);
+        $conferintaB = array();
+        for($i = 1; $i < 9; $i++){
+            $conferintaB[] = '<td>' . $response[$i];
+        }
+        $ultimaEchipa = explode('<div class="tab-pane fade" id="home">',$response[9]);
+        $conferintaB[] = '<td>' . $ultimaEchipa[0];
+
+        return $this->render("main/clasament.html.twig",[
+                "confA" => $conferintaA,
+                "confB" => $conferintaB
+            ]);
+    }
+    #[Route('/export', name: 'app_export')]
+    public function ExportNews(){
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet ->getActiveSheet();
+        $sheet->setTitle("Stiri");
+        $sheet->setCellValue("A1", "id");
+        $sheet->setCellValue("B1", "rezumat");
+        $sheet->setCellValue("C1", "text");
+        $sheet->setCellValue("D1", "autor");
+        $sheet->setCellValue("E1", "Poza1");
+        $sheet->setCellValue("F1", "Poza2");
+        $sheet->setCellValue("G1", "Poza3");
+        $stiri = $this->stiriRepository->findAll();
+        for($i=2;$i<=count($stiri)+1;$i++){
+            $sheet->setCellValue("A".$i, $stiri[$i-2]->getId());
+            $sheet->setCellValue("B".$i, $stiri[$i-2]->getRezumat());
+            $sheet->setCellValue("C".$i, $stiri[$i-2]->getText());
+            $sheet->setCellValue("D".$i, $stiri[$i-2]->getAutor());
+            $sheet->setCellValue("E".$i, $stiri[$i-2]->getPoza1());
+            $sheet->setCellValue("F".$i, $stiri[$i-2]->getPoza2());
+            $sheet->setCellValue("G".$i, $stiri[$i-2]->getPoza3());
+        }
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $fileName = 'stiri.xlsx';
+        $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+        $writer -> save($temp_file);
+        return $this->file($temp_file,$fileName,ResponseHeaderBag::DISPOSITION_INLINE);
+    }
+    #[Route('/import', name: 'app_import')]
+    public function ImportNews(\Symfony\Component\HttpFoundation\Request $request)
+    {
+        $the_file = $request->files->get('uploaded_file');
+        try{
+            $spreadsheet = IOFactory::load($the_file->getRealPath());
+            $sheet        = $spreadsheet->getActiveSheet();
+            $row_limit    = $sheet->getHighestDataRow();
+            $row_range    = range( 2, $row_limit );
+            $data = array();
+            foreach ( $row_range as $row ) {
+                $check = $this->stiriRepository->findOneBy(array("id" =>  $sheet->getCell( 'A' . $row )->getValue()));
+                if(isset($check)){
+                    continue;
+                }
+                $stire = new Stiri();
+                $stire->setTitlu($sheet->getCell( 'B' . $row )->getValue());
+                $stire->setRezumat($sheet->getCell( 'C' . $row )->getValue());
+                $stire->setText($sheet->getCell( 'D' . $row )->getValue());
+                $stire->setPoza1($sheet->getCell( 'E' . $row )->getValue());
+                $stire->setPoza2($sheet->getCell( 'F' . $row )->getValue());
+                $stire->setPoza3($sheet->getCell( 'G' . $row )->getValue());
+                $this->stiriRepository->save($stire);
+            }
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+
+        return new Response("importate");
     }
 }
