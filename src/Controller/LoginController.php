@@ -353,11 +353,9 @@ class LoginController extends AbstractController
                     $stire->setPoza1($sheet->getCell('F' . $row)->getValue());
                     $stire->setPoza2($sheet->getCell('G' . $row)->getValue());
                     $stire->setPoza3($sheet->getCell('H' . $row)->getValue());
-                    var_dump($stire);
                     $this->stiriRepository->save($stire);
                 }
             } catch (Exception $e) {
-                var_dump($e);
             }
             return new Response("importate");
         }            return new Response("neimportate");
