@@ -30,7 +30,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
-            {% if rol is defined and rol != 0 %}
+            {% if rol is defined and rol > 0 %}
                 <li style="border-style: solid;border-width: 2px; margin-right:5px" class="nav-item">
                 <a class="nav-link" href="{{ path('app_article') }}">Creeaza o stire!</a>
             </li>

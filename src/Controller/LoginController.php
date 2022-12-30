@@ -133,12 +133,12 @@ class LoginController extends AbstractController
             return $this->render("main/main.html.twig", [
                 "nume" => $_SESSION["nume"],
                 "rol" => $_SESSION["rol"],
-                "stiri" => array($stiri[0],$stiri[1])
+                "stiri" => array($stiri[count($stiri)-2],$stiri[count($stiri)-1])
             ]);
         }else{
             return $this->render("main/main.html.twig",[
                 "nume" => NULL,
-                "stiri" => array($stiri[0],$stiri[1])
+                "stiri" => array($stiri[count($stiri)-2],$stiri[count($stiri)-1])
             ]);
         }
     }
