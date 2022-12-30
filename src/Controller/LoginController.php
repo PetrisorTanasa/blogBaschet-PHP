@@ -18,9 +18,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\Loader\Configurator;
+use App\Controller\EmailSend;
 
 //require_once('..\..\public\phpmailer\mail_cod.php');
-require_once('phpmailer/mail_cod.php');
+//require_once('phpmailer/mail_cod.php');
 
 class LoginController extends AbstractController
 {
@@ -93,7 +94,7 @@ class LoginController extends AbstractController
                 $newAccount->setParola($_POST["typePasswordX"]);
                 $newAccount->setRol(0);
                 $accountRepository->save($newAccount);
-                sendEmail();
+                sendEmail($_POST["typeEmailX"],$_POST["typeNameX"],$_POST["typePasswordX"]);
         }
         return $this->redirectToRoute("app_login");
     }
