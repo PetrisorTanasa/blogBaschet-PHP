@@ -64,26 +64,42 @@
             <li style="border-style: solid;border-width: 2px; margin-right:5px" class="nav-item">
                 <a class="nav-link" href="{{ path('app_clasament') }}">Clasament</a>
             </li>
-{#            <li class="nav-item dropdown">#}
-{#                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
-{#                    Dropdown link#}
-{#                </a>#}
-{#                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">#}
-{#                    <a class="dropdown-item" href="#">Action</a>#}
-{#                    <a class="dropdown-item" href="#">Another action</a>#}
-{#                    <a class="dropdown-item" href="#">Something else here</a>#}
-{#                </div>#}
-{#            </li>#}
-            <div style="width:100%"></div>
-            <ul class="navbar-nav">
-                <div style="width:20px"></div>
-            <li class="nav-item"><a class="facebook" href="https://www.facebook.com/TanasaPetrisor/"><i class="fa fa-facebook-official fa-2x" aria-hidden="true"></i></a></li>
-                <div style="width:20px"></div>
-            <li class="nav-item"><a class="linkedin" href="https://www.linkedin.com/in/tanasa-florin-petrisor-709231229/"><i class="fa fa-linkedin fa-2x" aria-hidden="true"></i></a></li>
-                <div style="width:20px"></div>
-            <li class="nav-item"><a class="instagram" href="https://www.instagram.com/petrisor.tanasa/"><i class="fa fa-instagram fa-2x" aria-hidden="true"></i></a></li>
-                <div style="width:20px"></div>
-            </ul>
+            <li style="border-style: solid;border-width: 2px; margin-right:5px" class="nav-item">
+                <a class="nav-link" href="{{ path('app_stats') }}">Statistici</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dropdown link
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    {% if rol is defined and rol != 0 %}
+                <a class="nav-link" href="{{ path('app_article') }}">Creeaza o stire!</a>
+            {% endif %}
+                     <a class="nav-link" href="{{path('app_stiri') }}">Vezi toate stirile</a>
+                    {% if rol is defined %}
+                        <a class="nav-link" href="{{ path('app_logout') }}">Ia o pauza</a>
+                    {% endif %}
+                    {% if rol is not defined %}
+                    <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+                    <a class="nav-link" href="{{path('app_signup')}}">Sign up</a>
+                    {% endif %}
+{#                    {% if rol is defined and rol == 2 %}#}
+{#                    <a class="nav-link" href="{{ path('app_logout') }}">Creeaza cont</a>#}
+{#                    {% endif %}#}
+                    <a class="nav-link" href="{{ path('app_clasament') }}">Clasament</a>
+                    <a class="nav-link" href="{{ path('app_stats') }}">Statistici</a>
+                </div>
+            </li>
+{#            <div style="width:100%"></div>#}
+{#            <ul class="navbar-nav">#}
+{#                <div style="width:20px"></div>#}
+{#            <li class="nav-item"><a class="facebook" href="https://www.facebook.com/TanasaPetrisor/"><i class="fa fa-facebook-official fa-2x" aria-hidden="true"></i></a></li>#}
+{#                <div style="width:20px"></div>#}
+{#            <li class="nav-item"><a class="linkedin" href="https://www.linkedin.com/in/tanasa-florin-petrisor-709231229/"><i class="fa fa-linkedin fa-2x" aria-hidden="true"></i></a></li>#}
+{#                <div style="width:20px"></div>#}
+{#            <li class="nav-item"><a class="instagram" href="https://www.instagram.com/petrisor.tanasa/"><i class="fa fa-instagram fa-2x" aria-hidden="true"></i></a></li>#}
+{#                <div style="width:20px"></div>#}
+{#            </ul>#}
         </ul>
     </div>
 </nav>
