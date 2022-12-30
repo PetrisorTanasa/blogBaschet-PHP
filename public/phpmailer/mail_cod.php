@@ -19,7 +19,7 @@ class EmailSend
 // În caz că vre-un rând depășește N caractere, trebuie să utilizăm
 // wordwrap()
 
-    $mail = new PHPMailer(true);
+    $mail = new \PHPMailer(true);
 
     $mail->IsSMTP();
 

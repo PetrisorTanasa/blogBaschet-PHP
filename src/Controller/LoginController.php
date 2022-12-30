@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\Loader\Configurator;
 use App\Controller\EmailSend;
 
-//require_once('..\..\public\phpmailer\mail_cod.php');
+require_once('../../public/phpmailer/mail_cod.php');
 //require_once('phpmailer/mail_cod.php');
 
 class LoginController extends AbstractController
