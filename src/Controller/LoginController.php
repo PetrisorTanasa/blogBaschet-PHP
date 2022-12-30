@@ -20,9 +20,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\Loader\Configurator;
-use App\Controller\EmailSend;
 //
-//require_once('public/phpmailer/mail_cod.php');
+require_once(__DIR__ . '/../../public/phpmailer/mail_cod.php');
 
 //require_once('phpmailer/mail_cod.php');
 
@@ -97,18 +96,20 @@ class LoginController extends AbstractController
                 $newAccount->setParola($_POST["typePasswordX"]);
                 $newAccount->setRol(0);
                 $accountRepository->save($newAccount);
-            try {
-                $email = (new Email())
-                ->from('baschet-bucurestean@gmail.com')
-                    ->to($_POST["typeEmailX"])
-                    ->subject("Noul tau cont!")
-                    ->html("Salut,<br>Multumim pentru ca ti-ai facut cont pe platforma noastra. Ai aici credentialele:<br>Username: " . $_POST["typeNameX"] . "<br>Parola: " . $_POST["typePasswordX"]);
-                $mailer->send($email);
-            } catch (TransportExceptionInterface $e) {
-               var_dump($e);
-               die();
-            }
-            die();
+                $email = new EmailSend();
+                $email->sendEmail($_POST["typeEmailX"],$_POST["typeNameX"],$_POST["typePasswordX"]);
+//            try {
+//                $email = (new Email())
+//                ->from('baschet-bucurestean@gmail.com')
+//                    ->to($_POST["typeEmailX"])
+//                    ->subject("Noul tau cont!")
+//                    ->html("Salut,<br>Multumim pentru ca ti-ai facut cont pe platforma noastra. Ai aici credentialele:<br>Username: " . $_POST["typeNameX"] . "<br>Parola: " . $_POST["typePasswordX"]);
+//                $mailer->send($email);
+//            } catch (TransportExceptionInterface $e) {
+//               var_dump($e);
+//               die();
+//            }
+//            die();
         }
         return $this->redirectToRoute("app_login");
     }
