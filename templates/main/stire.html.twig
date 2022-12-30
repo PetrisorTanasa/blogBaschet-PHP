@@ -13,4 +13,19 @@
 {% else %}
     <p>Ceva s-a intamplat... :/</p>
     {% endif %}
+    <p>--------------------------------------------------</p><br>
+    <form method="post" action="{{ path('app_comentariu') }}">
+        <textarea name="comentariu"></textarea><br>
+        <button type="submit" name="id_anunt" value="{{ id }}">Comenteaza !</button>
+    </form>
+    <p>--------------------------------------------------</p><br>
+    {% if comentarii is defined %}
+        {% for comentariu in comentarii %}
+    <div style = "border: 1px solid #000; width: 700px; word-break:break-all;">
+        <h2>{{ comentariu.numeComentator }}</h2><br>
+        <h3>{{ comentariu.comentariu }}</h3><br>
+    </div>
+            <p>-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"-"</p><br>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

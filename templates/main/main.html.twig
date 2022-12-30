@@ -16,7 +16,7 @@
         .grid-container {
             display: grid;
             grid-template-areas:
-                    "myArea  myArea myAREA myAREA myAreA";
+                    "myArea  myArea myAREA myAREA myAreA myAreA";
         }
     </style>
     <div style="height:100vh" class="grid-container">
@@ -32,15 +32,18 @@
             {% endfor %}
         </ul>
     </div>
-        <div  style="border-width: 2px;border-style: dashed;border-color: lightblue" class="item3">
+        <div  style="border-width: 2px;border-style: dashed;border-color: lightblue;" class="item3">
             {% if rol is defined and rol >= 1 %}
-                <a href="{{ path('app_export') }}"><h5>Export</h5></a>
-                <br>
+                <form action="{{ path('app_export') }}">
+                <button type="submit" margin="20px">Export</button>
+                </form>
+                    <br>
                 <form action="{{ path('app_import') }}" method="post" enctype="multipart/form-data">
-                    <input type="file" name="uploaded_file"/><br><br>
-                    <button type="submit">Importa stiri</button>
+                    <input type="file" name="uploaded_file" margin="20px"/><br><br>
+                    <button type="submit" margin="20px">Importa stiri</button>
                 </form>
             {% endif %}
+            <iframe width="100%" height="50%" src="{{ path('app_stats') }}"></iframe>
         </div>
     </div>
 {% endblock %}

@@ -1,0 +1,18 @@
+{% block body %}
+    <div style="display:flex;flex-direction: row;">
+    <div class="container" width="500px">
+
+        <div id="div_chart"></div>
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+        <script type="text/javascript"> {{ gc_draw(piechart, 'div_chart') }} </script>
+
+        <div id="div_chart2"></div>
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+        <script type="text/javascript"> {{ gc_draw(piechart2, 'div_chart2') }} </script>
+    </div>
+    </div>
+{% endblock %}

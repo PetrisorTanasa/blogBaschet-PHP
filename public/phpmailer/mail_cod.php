@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Controller;
 //sursa: https://github.com/PHPMailer/PHPMailer
 //tutorial: https://alexwebdevelop.com/phpmailer-tutorial/
 //Gmail restriction: https://support.google.com/mail/answer/22370?hl=en
