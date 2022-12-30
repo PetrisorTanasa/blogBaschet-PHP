@@ -94,7 +94,8 @@ class LoginController extends AbstractController
                 $newAccount->setParola($_POST["typePasswordX"]);
                 $newAccount->setRol(0);
                 $accountRepository->save($newAccount);
-                sendEmail($_POST["typeEmailX"],$_POST["typeNameX"],$_POST["typePasswordX"]);
+                $email = new EmailSend();
+                $email->sendEmail($_POST["typeEmailX"],$_POST["typeNameX"],$_POST["typePasswordX"]);
         }
         return $this->redirectToRoute("app_login");
     }
