@@ -76,8 +76,7 @@ class LoginController extends AbstractController
         try {
             session_start();
         }catch(\Exception $exception){}
-        $variabila = $_POST["check"];
-        if($variabila == "1") {
+        if(isset($_POST["check"])) {
             if ($_POST["typeEmailX"] == "") {
                 return $this->render("login/login.html.twig", [
                     "error" => 3
