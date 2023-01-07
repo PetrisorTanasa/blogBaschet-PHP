@@ -14,7 +14,7 @@ class EmailSend
   public function sendEmail(string $email, string $username, string $parola)
   {
 // Mesajul
-    $message = "Salut,<br>Multumim pentru ca ti-ai facut cont pe platforma noastra. Ai aici credentialele:<br>Username: " . $username . "<br>Parola: " . $parola;
+    $message = "Salut,<br>Multumim pentru ca ti-ai facut cont pe platforma noastra. Ai aici credentialele:<br>Email: " . $email . "<br>Parola: " . $parola . "<br><br>Numele contului tau este " . $username;
 
 // În caz că vre-un rând depășește N caractere, trebuie să utilizăm
 // wordwrap()
