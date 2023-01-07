@@ -70,12 +70,27 @@ class LoginController extends AbstractController
         }
     }
 
-    #[Route('/account/check', name: 'app_check_account')]
-    public function accountCheck(AccountRepository $accountRepository, MailerInterface $mailer): Response
+    #[Route('/account/check/{check?}', name: 'app_check_account')]
+    public function accountCheck(AccountRepository $accountRepository, MailerInterface $mailer, \Symfony\Component\HttpFoundation\Request $request): Response
     {
         try {
             session_start();
         }catch(\Exception $exception){}
+        $variabila = $_POST["check"];
+        if($variabila == "1") {
+            if ($_POST["typeEmailX"] == "") {
+                return $this->render("login/login.html.twig", [
+                    "error" => 3
+                ]);
+            } else {
+                $cont = $accountRepository->findOneBy(array("mail" => $_POST["typeEmailX"]));
+                $email = new EmailSend();
+                $email->sendEmail($cont->getMail(), $cont->getName(), $cont->getParola());
+                return $this->render("login/login.html.twig", [
+                    "error" => 4
+                ]);
+            }
+        }
         if(isset($_POST["Login"])){
             if(!isset($_SESSION["incercare"])) {
                 $_SESSION["incercare"] = 1;

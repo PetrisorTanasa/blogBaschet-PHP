@@ -32,6 +32,17 @@
                                         Ati gresit captcha ul
                                     </div>
                                 {% endif %}
+                                {% if error is defined and error == 3%}
+                                    <div class="alert alert-danger" role="alert">
+                                    Pentru a primi parola, este necesar sa introduceti mail ul.
+                                </div>
+                                {% endif %}
+
+                                {% if error is defined and error ==4%}
+                                    <div class="alert alert-success" role="alert">
+                                        Veti primi in scurt timp un mail cu parola
+                                    </div>
+                                {% endif %}
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                 <p class="text-white-50 mb-5">Please enter your username and password!</p>
 
@@ -52,7 +63,7 @@
                                     <label class="form-label" for="captcha">Captcha</label>
                                 </div>
                                 {% endif %}
-{#                                <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>#}
+                                <button class="btn btn-outline-light btn-lg px-5" type="submit" name="check" value = "1">Forgot password?</button><br>
 
                                 <button class="btn btn-outline-light btn-lg px-5" type="submit" name="Login" value="0">Login</button>
 
