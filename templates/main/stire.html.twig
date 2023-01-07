@@ -7,7 +7,7 @@
 {% if stire is defined %}
     <div style = "border: 1px solid #000; width: 700px; word-break:break-all;">
     <h2>{{ stire.titlu }}</h2>
-    <h3>{{ stire.text }}</h3>
+    <h3>{{ stire.text | raw}}</h3>
     <h5>{{ stire.autor }}</h5>
         {% if stire.Poza1 is defined %}
         <img src="{{ stire.Poza1 }}" width="200px"><br>

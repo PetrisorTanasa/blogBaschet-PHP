@@ -222,7 +222,11 @@ class LoginController extends AbstractController
             session_start();
         }catch(\Exception $exception){}
         if(isset($_SESSION["rol"]) and ($_SESSION["rol"] == 1 or $_SESSION["rol"] == 2)){
-            $articol = new Stiri();
+            if(isset($_POST["updateStire"])){
+                $articol = $stiriRepository->find($_POST["updateStire"]);
+            }else {
+                $articol = new Stiri();
+            }
             $articol -> setTitlu($_POST["titluArt"]);
             $articol -> setRezumat($_POST["rezumatArt"]);
             $articol -> setText($_POST["textArt"]);
@@ -489,5 +493,89 @@ class LoginController extends AbstractController
             "piechart" => $pieChart,
             "piechart2" => $pieChart2
         ]);
+    }
+    #[Route('/importa_baschet_ro', name: 'app_import_baschetro')]
+    public function importBaschetRo(StiriRepository $stiriRepository){
+        for($i=1;$i<=10;$i++){
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://baschet.ro/liga-nationala-de-baschet-masculin/stiri?page=' . $i,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Cookie: XSRF-TOKEN=eyJpdiI6ImFWdSttdGs2U1JWWEd3eENzbG4rOWc9PSIsInZhbHVlIjoiYXNFZFdrYllhMXpPVnpmSkJVeFwvek4yQnJQdWlFU2djZGx6b1pLYzZRN0VFQnc4SnJ2OG1IandmOSt6ZU03czIiLCJtYWMiOiJjMTgzYzllMDQzYzVlOTg2NWU0MDk5MTFlMThhYzdkY2IwZGJlODM4MDdhYmVhZmI1OWQ3NWQ4ZjRlYjhkMzM5In0%3D; baschetro_session=eyJpdiI6IkNMWkorSm9LeG0wbVJKUGw2dmY0SXc9PSIsInZhbHVlIjoiQTRSdWhRUHhuSnp0NTdwZ0pvR0s4Ymw1N2xCMUozcVo0eGpnMWlka0NVb0JiUzQ4anFYdVlDODFlMnZKelMrNyIsIm1hYyI6ImZkMGQ3NmYxNDJjMjYyZjE1NTY1YzBjYmY4MzIyN2ZmNzk4YmU1Yzc5ZDJjMjFkOWI4YTg2OGI1YmFlMDIyNGEifQ%3D%3D'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            $r = explode('<a href="https://baschet.ro/liga-nationala-de-baschet-masculin/stiri/', $response);
+            $i = 0;
+            unset($r[0]);
+            unset($r[1]);
+            unset($r[2]);
+            unset($r[3]);
+            foreach($r as $link){
+                $linkul = explode('"',$link);
+                $stire = $stiriRepository->findOneBy(array("identificator"=>$linkul[0]));
+                if(!isset($stire)){
+                    $stire = new Stiri();
+                }
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://baschet.ro/liga-nationala-de-baschet-masculin/stiri/'  . $linkul[0],
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'GET',
+                    CURLOPT_HTTPHEADER => array(
+                        'Cookie: XSRF-TOKEN=eyJpdiI6ImZDclNHZyttNU14ZlJGQVdaS2VIZWc9PSIsInZhbHVlIjoiak1oXC9JVkp3UmdXUVRBcTZVQzZRWUpEd29CdXpBQ0hwUEhQOWZlK0FYWVBheUZ3SjJYbGt2bVZLUlZwT0MrTnkiLCJtYWMiOiIwZmVmYTgwOTcwYzZhOGYxMzk5NWY0M2IyMDI3OTc0ZTgzZGRmZDZlYmM3NmMzM2Q1MjgwODZjNzc0NjVlYzkwIn0%3D; baschetro_session=eyJpdiI6IkNVY0FycStHU1dZUFwvY00rWFBhMElBPT0iLCJ2YWx1ZSI6IldRRGtPN1RvYWxydVhrTUJRaHQ4NEtsUW9ZTE4zN3orcll6b0txRVUzVkp3b0tVTDNjdVdXbzc2NWtWcXRIZmkiLCJtYWMiOiIyNDE4MTE2MTFiYmNmOGFmMzI0MTE1M2JlMGY2MGRhZmI3NmIwMDAyNTA4NzZmYjM1MGM1OWVmOTNkMWU0NTFjIn0%3D'
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+
+                $titlu = explode("<h1>",$response);
+                $titlul = explode("</h1>",$titlu[2]);
+
+                $stire->setTitlu($titlul[0]);
+
+                $rezumat = explode("<strong>",$response);
+                $rezumatul = explode("</strong>",$rezumat[1]);
+
+                $stire->setRezumat($rezumatul[0]);
+
+                $descriere = explode("<div class=\"single-news-content\">",$response);
+                $descrierea = explode("</div>",$descriere[1]);
+
+                $autor = explode('<a href="https://baschet.ro/articole/autor/',$response);
+                $autorl = explode(">",$autor[2]);
+                $autorul = explode("</a>",$autorl[1]);
+
+                $stire->setText($descrierea[0]);
+                $stire->setIdentificator($linkul[0]);
+                $stire->setPoza1("q");
+                $stire->setPoza2("q");
+                $stire->setPoza3("q");
+                $stire->setAutor(substr($autorul[0], 0, -3));
+
+                $stiriRepository->save($stire);
+            }
+        }
+        return new Response("Au fost importate.");
     }
 }

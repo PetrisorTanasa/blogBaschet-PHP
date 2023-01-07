@@ -16,10 +16,10 @@ class Stiri
     #[ORM\Column(length: 255)]
     private ?string $titlu = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 500)]
     private ?string $rezumat = null;
 
-    #[ORM\Column(length: 4000)]
+    #[ORM\Column(length: 8000)]
     private ?string $text = null;
 
     #[ORM\Column(length: 255)]
@@ -33,6 +33,9 @@ class Stiri
 
     #[ORM\Column(length: 255)]
     private ?string $autor = null;
+
+    #[ORM\Column(length: 400, nullable: true)]
+    private ?string $identificator = null;
 
     public function getId(): ?int
     {
@@ -119,6 +122,18 @@ class Stiri
     public function setAutor(string $autor): self
     {
         $this->autor = $autor;
+
+        return $this;
+    }
+
+    public function getIdentificator(): ?string
+    {
+        return $this->identificator;
+    }
+
+    public function setIdentificator(?string $identificator): self
+    {
+        $this->identificator = $identificator;
 
         return $this;
     }
