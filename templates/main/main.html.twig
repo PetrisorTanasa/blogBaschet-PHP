@@ -4,6 +4,21 @@
 
 {% block body %}
     <style>
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        a:active {
+            text-decoration: none;
+        }
         .item1 {
             grid-area: myArea;
         }
@@ -13,15 +28,27 @@
         .item3 {
             grid-area: myAreA;
         }
-        .grid-container {
-            display: grid;
-            grid-template-areas:
+        @media only screen and (min-width: 1600px) {
+            .grid-container {
+                display: grid;
+                grid-template-areas:
                     "myArea  myArea myAREA myAREA myAreA myAreA";
+            }
         }
+        @media only screen and (max-width: 1600px) {
+            .grid-container {
+                display: grid;
+                grid-template-areas:
+            "myAREA myAREA"
+            "myArea  myArea"
+            "myAreA myAreA";
+            }
+        }
+
     </style>
     <div style="height:100vh" class="grid-container">
     <div  style="border-width: 2px;border-style: dashed;border-color: lightblue" class="item1">
-        <iframe src="{{ path('app_clasament') }}" width="100%" height="100%"></iframe>
+        <iframe src="{{ path('app_clasament') }}" width="100%" height="800 px"></iframe>
     </div>
     <div  style="border-width: 2px;border-style: dashed;border-color: lightblue" class="item2">
         <ul>
@@ -53,7 +80,7 @@
                     <button type="submit" margin="20px">Importa stiri</button>
                 </form>
             {% endif %}
-            <iframe width="100%" height="50%" src="{{ path('app_stats') }}"></iframe>
+            <iframe width="100%" height="450 px" src="{{ path('app_stats') }}"></iframe>
         </div>
     </div>
 {% endblock %}

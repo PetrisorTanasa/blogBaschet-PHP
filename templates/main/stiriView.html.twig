@@ -6,7 +6,7 @@
     <ul>
         <h4>Ultimele stiri din baschetul bucurestean</h4>
         {% for stire in stiri %}
-            <div onclick="location.href='{{ path('app_watch',{"id" : stire.id}) }}'" style = "border: 1px solid #000; word-break:break-all; margin:10px"><li style="width:500px;height:100%"><a href="{{ path('app_watch',{"id" : stire.id}) }}" style="margin:30px"><div><h2>{{ stire.titlu }}</h2><br><h4>
+            <div onclick="location.href='{{ path('app_watch',{"id" : stire.id}) }}'" style = "border: 1px solid #000; word-break:break-all; margin:10px"><li style="width:100%;height:100%"><a href="{{ path('app_watch',{"id" : stire.id}) }}" style="margin:30px"><div><h2>{{ stire.titlu }}</h2><br><h4>
                                 {{ stire.rezumat }}</h4><br><h5>{{ stire.autor }}</h5></div></a><br>{% if nume is defined and rol is defined and (stire.autor == nume or rol == 2)%}<a href="{{ path('app_article_update',{"id":stire.id}) }}" style="margin:10px">Update</a><a href="{{ path('app_article_delete',{"id":stire.id}) }}">Delete</a>{% endif %}</li></div>
         {% endfor %}
     </ul>
