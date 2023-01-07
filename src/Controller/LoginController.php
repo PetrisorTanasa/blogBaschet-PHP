@@ -225,13 +225,22 @@ class LoginController extends AbstractController
             }catch(\Exception $exception){}
         $comentarii = $comentariiRepository->findBy(array("id_anunt"=>$request->get("id")));
         $stire = $stiriRepository -> find($request->get("id"));
-        return $this->render("main/stire.html.twig",[
-            "stire" => $stire,
-            "id" => $request->get("id"),
-            "comentarii" => $comentarii,
-            "rol"   => $_SESSION["rol"]
-            ]
+        if(isset($_SESSION["rol"])) {
+            return $this->render("main/stire.html.twig", [
+                    "stire" => $stire,
+                    "id" => $request->get("id"),
+                    "comentarii" => $comentarii,
+                    "rol" => $_SESSION["rol"]
+                ]
             );
+        }else {
+            return $this->render("main/stire.html.twig", [
+                    "stire" => $stire,
+                    "id" => $request->get("id"),
+                    "comentarii" => $comentarii
+                ]
+            );
+        }
     }
     #[Route('/update/{id}', name: 'app_article_update')]
     public function updateArticle(StiriRepository $stiriRepository,\Symfony\Component\HttpFoundation\Request $request): Response
