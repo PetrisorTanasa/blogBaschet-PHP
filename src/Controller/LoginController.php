@@ -58,9 +58,16 @@ class LoginController extends AbstractController
                 $mesaj = "Exista deja un cont cu acest mail";
             }
         }
-        return $this->render("login/signup.html.twig",[
-            "mesaj" => $mesaj
-        ]);
+        if(isset($_SESSION["rol"])) {
+            return $this->render("login/signup.html.twig", [
+                "mesaj" => $mesaj,
+                "rol" => $_SESSION["rol"]
+            ]);
+        }else{
+            return $this->render("login/signup.html.twig", [
+                "mesaj" => $mesaj
+            ]);
+        }
     }
 
     #[Route('/account/check', name: 'app_check_account')]
@@ -70,13 +77,31 @@ class LoginController extends AbstractController
             session_start();
         }catch(\Exception $exception){}
         if(isset($_POST["Login"])){
-            var_dump($_POST);
+            if(!isset($_SESSION["incercare"])) {
+                $_SESSION["incercare"] = 1;
+            }else{
+                $_SESSION["incercare"]++;
+            }
+            if($_SESSION["incercare"] % 3 == 1) {
+                if (isset($_SESSION["cod"]) and $_SESSION["cod"] != $_POST["captcha"]) {
+                    return $this->render("login/login.html.twig", [
+                        "error" => 2,
+                        "incercare" => $_SESSION["incercare"]
+                    ]);
+                }
+            }
             $cont = $accountRepository->findOneBy(array("mail"=>$_POST["typeEmailX"],"parola"=>$_POST["typePasswordX"]));
             if(isset($cont)){
                 $_SESSION["loggedIn"] = 1;
                 $_SESSION["nume"] = $cont->getName();
                 $_SESSION["rol"] = $cont->getRol();
+                $_SESSION["incercare"] = 1;
                 return $this->redirectToRoute('app_main');
+            }else{
+                return $this->render("login/login.html.twig",[
+                    "error" => 1,
+                    "incercare" => $_SESSION["incercare"]
+                ]);
             }
         }
         if(isset($_POST["Signup"])){
@@ -94,22 +119,14 @@ class LoginController extends AbstractController
                 $newAccount->setName($_POST["typeNameX"]);
                 $newAccount->setMail($_POST["typeEmailX"]);
                 $newAccount->setParola($_POST["typePasswordX"]);
-                $newAccount->setRol(0);
+                if(isset($_SESSION["rol"])and $_SESSION["rol"] == 2 and isset($_POST["rol"])){
+                    $newAccount->setRol($_POST["rol"]);
+                }else {
+                    $newAccount->setRol(0);
+                }
                 $accountRepository->save($newAccount);
                 $email = new EmailSend();
                 $email->sendEmail($_POST["typeEmailX"],$_POST["typeNameX"],$_POST["typePasswordX"]);
-//            try {
-//                $email = (new Email())
-//                ->from('baschet-bucurestean@gmail.com')
-//                    ->to($_POST["typeEmailX"])
-//                    ->subject("Noul tau cont!")
-//                    ->html("Salut,<br>Multumim pentru ca ti-ai facut cont pe platforma noastra. Ai aici credentialele:<br>Username: " . $_POST["typeNameX"] . "<br>Parola: " . $_POST["typePasswordX"]);
-//                $mailer->send($email);
-//            } catch (TransportExceptionInterface $e) {
-//               var_dump($e);
-//               die();
-//            }
-//            die();
         }
         return $this->redirectToRoute("app_login");
     }
@@ -203,13 +220,18 @@ class LoginController extends AbstractController
     #[Route('/vizionare/{id}', name: 'app_watch')]
     public function seeArticle(ComentariiRepository $comentariiRepository,StiriRepository $stiriRepository,\Symfony\Component\HttpFoundation\Request $request): Response
     {
+            try {
+                session_start();
+            }catch(\Exception $exception){}
         $comentarii = $comentariiRepository->findBy(array("id_anunt"=>$request->get("id")));
         $stire = $stiriRepository -> find($request->get("id"));
         return $this->render("main/stire.html.twig",[
             "stire" => $stire,
             "id" => $request->get("id"),
-            "comentarii" => $comentarii
-        ]);
+            "comentarii" => $comentarii,
+            "rol"   => $_SESSION["rol"]
+            ]
+            );
     }
     #[Route('/update/{id}', name: 'app_article_update')]
     public function updateArticle(StiriRepository $stiriRepository,\Symfony\Component\HttpFoundation\Request $request): Response

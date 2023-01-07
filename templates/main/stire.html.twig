@@ -9,16 +9,27 @@
     <h2>{{ stire.titlu }}</h2>
     <h3>{{ stire.text }}</h3>
     <h5>{{ stire.autor }}</h5>
+        {% if stire.Poza1 is defined %}
+        <img src="{{ stire.Poza1 }}" width="200px"><br>
+            {% endif %}
+        {% if stire.Poza2 is defined %}
+            <img src="{{ stire.Poza2 }}" width="200px"><br>
+        {% endif %}
+        {% if stire.Poza3 is defined %}
+            <img src="{{ stire.Poza3 }}" width="200px"><br>
+        {% endif %}
     </div>
 {% else %}
     <p>Ceva s-a intamplat... :/</p>
     {% endif %}
+    {% if rol is defined %}
     <p>--------------------------------------------------</p><br>
     <form method="post" action="{{ path('app_comentariu') }}">
         <textarea name="comentariu"></textarea><br>
         <button type="submit" name="id_anunt" value="{{ id }}">Comenteaza !</button>
     </form>
     <p>--------------------------------------------------</p><br>
+    {% endif %}
     {% if comentarii is defined %}
         {% for comentariu in comentarii %}
     <div style = "border: 1px solid #000; width: 700px; word-break:break-all;">

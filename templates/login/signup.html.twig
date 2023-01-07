@@ -50,7 +50,16 @@
                                     <input type="password" id="typeRePasswordX" name="typeRePasswordX" class="form-control form-control-lg" />
                                     <label class="form-label" for="typeRePasswordX">Reintroduceti parola</label>
                                 </div>
-
+                                {% if rol is defined and rol == 2 %}
+                                <div class="form-outline form-white mb-4">
+                                    <select id="rol" name="rol" class="form-control form-control-lg">
+                                        <option value="0">Utilizator</option>
+                                        <option value="1">Autor</option>
+                                        <option value="2">Admin</option>
+                                    </select>
+                                    <label class="form-label" for="rol">Reintroduceti parola</label>
+                                </div>
+                                {% endif %}
                                 <button class="btn btn-outline-light btn-lg px-5" type="submit" name="Signup" value="1">Signup</button>
                             </div>
                         </div>

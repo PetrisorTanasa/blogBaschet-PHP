@@ -39,7 +39,6 @@
                                         <textarea type="text" id="typePasswordX" name="textArt" class="form-control form-control-lg">{%if stire is defined %}{{ stire.text }}{% endif %}</textarea>
                                         <label class="form-label" for="typePasswordX">{% if rol is defined and rol != 0 %}Articolu{% else %}Barfa{% endif %}</label>
                                     </div>
-                                    {% if rol is defined and rol != 0 %}
                                     <div class="form-outline form-white mb-4">
                                         <input type="text" id="typePasswordX" name="poza1Art" class="form-control form-control-lg" value="{%if stire is defined %}{{ stire.poza1 }}{% endif %}"/>
                                         <label class="form-label" for="typePasswordX">Link poza 1</label>
@@ -54,8 +53,7 @@
                                         <input type="text" id="typePasswordX" name="poza3Art" class="form-control form-control-lg" value="{%if stire is defined %}{{ stire.poza3 }}{% endif %}"/>
                                         <label class="form-label" for="typePasswordX">Link poza 3</label>
                                     </div>
-                                    {% endif %}
-                                    <button class="btn btn-outline-light btn-lg px-5" type="submit" name="Login" value="0">Login</button>
+                                    <button class="btn btn-outline-light btn-lg px-5" type="submit" name="Login" value="0">Submit</button>
 
                                 </div>
 
