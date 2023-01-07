@@ -43,6 +43,12 @@
                                         Veti primi in scurt timp un mail cu parola
                                     </div>
                                 {% endif %}
+
+                                {% if error is defined and error ==5%}
+                                    <div class="alert alert-danger" role="alert">
+                                        Nu a fost gasit acest mail in baza de date.
+                                    </div>
+                                {% endif %}
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                 <p class="text-white-50 mb-5">Please enter your username and password!</p>
 

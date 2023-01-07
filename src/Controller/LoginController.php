@@ -84,6 +84,11 @@ class LoginController extends AbstractController
                 ]);
             } else {
                 $cont = $accountRepository->findOneBy(array("mail" => $_POST["typeEmailX"]));
+                if(!isset($cont)){
+                    return $this->render("login/login.html.twig", [
+                        "error" => 5
+                    ]);
+                }
                 $email = new EmailSend();
                 $email->sendEmail($cont->getMail(), $cont->getName(), $cont->getParola());
                 return $this->render("login/login.html.twig", [
