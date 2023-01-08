@@ -496,7 +496,7 @@ class LoginController extends AbstractController
     }
     #[Route('/importa_baschet_ro', name: 'app_import_baschetro')]
     public function importBaschetRo(StiriRepository $stiriRepository){
-        for($i=1;$i<=10;$i++){
+        for($i=10;$i>=1;$i--){
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -526,9 +526,11 @@ class LoginController extends AbstractController
             foreach($r as $link){
                 $linkul = explode('"',$link);
                 $stire = $stiriRepository->findOneBy(array("identificator"=>$linkul[0]));
-                if(!isset($stire)){
-                    $stire = new Stiri();
+                if(isset($stire)){
+                    continue;
                 }
+                    $stire = new Stiri();
+
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -566,11 +568,13 @@ class LoginController extends AbstractController
                 $autorl = explode(">",$autor[2]);
                 $autorul = explode("</a>",$autorl[1]);
 
+                $poza = explode('<img src="https://www.baschet.ro/storage/',$descriere[1]);
+                $pozal = explode('alt="',$poza[1]);
+
                 $stire->setText($descrierea[0]);
                 $stire->setIdentificator($linkul[0]);
-                $stire->setPoza1("q");
-                $stire->setPoza2("q");
-                $stire->setPoza3("q");
+                $stire->setPoza1("https://www.baschet.ro/storage/" . substr(trim($pozal[0]),0,-1));
+                $stire->setPoza2("https://www.frbaschet.ro/public/storage/posts/September2022/66toscCpztJSBhafSwFf-largepost.jpg");
                 $stire->setAutor(substr($autorul[0], 0, -3));
 
                 $stiriRepository->save($stire);
