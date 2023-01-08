@@ -169,12 +169,12 @@ class LoginController extends AbstractController
             return $this->render("main/main.html.twig", [
                 "nume" => $_SESSION["nume"],
                 "rol" => $_SESSION["rol"],
-                "stiri" => array($stiri[count($stiri)-2],$stiri[count($stiri)-1])
+                "stiri" => array($stiri[0],$stiri[1],$stiri[2])
             ]);
         }else{
             return $this->render("main/main.html.twig",[
                 "nume" => NULL,
-                "stiri" => array($stiri[count($stiri)-2],$stiri[count($stiri)-1])
+                "stiri" => array($stiri[0],$stiri[1],$stiri[2])
             ]);
         }
     }
@@ -360,12 +360,13 @@ class LoginController extends AbstractController
                 $sheet = $spreadsheet->getActiveSheet();
                 $sheet->setTitle("Stiri");
                 $sheet->setCellValue("A1", "id");
-                $sheet->setCellValue("B1", "rezumat");
-                $sheet->setCellValue("C1", "text");
-                $sheet->setCellValue("D1", "autor");
-                $sheet->setCellValue("E1", "Poza1");
-                $sheet->setCellValue("F1", "Poza2");
-                $sheet->setCellValue("G1", "Poza3");
+                $sheet->setCellValue("B1", "titlu");
+                $sheet->setCellValue("C1", "rezumat");
+                $sheet->setCellValue("D1", "text");
+                $sheet->setCellValue("E1", "autor");
+                $sheet->setCellValue("F1", "Poza1");
+                $sheet->setCellValue("G1", "Poza2");
+                $sheet->setCellValue("H1", "Poza3");
                 $stiri = $this->stiriRepository->findAll();
                 for ($i = 2; $i <= count($stiri) + 1; $i++) {
                     $sheet->setCellValue("A" . $i, $stiri[$i - 2]->getId());

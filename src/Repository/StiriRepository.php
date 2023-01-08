@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @method Stiri|null find($id, $lockMode = null, $lockVersion = null)
  * @method Stiri|null findOneBy(array $criteria, array $orderBy = null)
- * @method Stiri[]    findAll()
  * @method Stiri[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class StiriRepository extends ServiceEntityRepository
@@ -31,6 +30,11 @@ class StiriRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
+    }
+
+    public function findAll()
+    {
+        return $this->findBy(array(), array('id' => 'DESC'));
     }
 
 //    /**
