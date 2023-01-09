@@ -541,7 +541,7 @@ class LoginController extends AbstractController
 
         $stats3 = array(['Categories','Pie expense']);
         $dispozitivele = $statisticiVizitatoriRepository->findAll();
-        var_dump($dispozitivele);
+
         foreach($dispozitivele as $dispozitive){
             array_push($stats3,[$dispozitive->getSistem(),$dispozitive->getCount()]);
         }
