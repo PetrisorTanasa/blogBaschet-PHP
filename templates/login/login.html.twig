@@ -49,6 +49,11 @@
                                         Nu a fost gasit acest mail in baza de date.
                                     </div>
                                 {% endif %}
+                                {% if error is defined and error ==10%}
+                                    <div class="alert alert-danger" role="alert">
+                                        Trebuie sa va activati contul !!
+                                    </div>
+                                {% endif %}
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                 <p class="text-white-50 mb-5">Please enter your username and password!</p>
 

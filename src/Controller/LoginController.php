@@ -114,11 +114,18 @@ class LoginController extends AbstractController
             }
             $cont = $accountRepository->findOneBy(array("mail"=>$_POST["typeEmailX"],"parola"=>$_POST["typePasswordX"]));
             if(isset($cont)){
-                $_SESSION["loggedIn"] = 1;
-                $_SESSION["nume"] = $cont->getName();
-                $_SESSION["rol"] = $cont->getRol();
-                $_SESSION["incercare"] = 1;
-                return $this->redirectToRoute('app_main');
+                if(is_null($cont->getIdentificator()) or $cont->getIdentificator() == "activ") {
+                    $_SESSION["loggedIn"] = 1;
+                    $_SESSION["nume"] = $cont->getName();
+                    $_SESSION["rol"] = $cont->getRol();
+                    $_SESSION["incercare"] = 1;
+                    return $this->redirectToRoute('app_main');
+                }else{
+                    return $this->render("login/login.html.twig",[
+                        "error" => 10,
+                        "incercare" => $_SESSION["incercare"]
+                    ]);
+                }
             }else{
                 return $this->render("login/login.html.twig",[
                     "error" => 1,
@@ -137,6 +144,13 @@ class LoginController extends AbstractController
                         "error" => 2
                         ]);
             }
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < 20; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+
                 $newAccount = new Account();
                 $newAccount->setName($_POST["typeNameX"]);
                 $newAccount->setMail($_POST["typeEmailX"]);
@@ -146,9 +160,11 @@ class LoginController extends AbstractController
                 }else {
                     $newAccount->setRol(0);
                 }
+                $newAccount->setIdentificator($randomString);
                 $accountRepository->save($newAccount);
+                $site = "http://baschet-bucurestean.herokuapp.com/activeaza/" . $randomString;
                 $email = new EmailSend();
-                $email->sendEmail($_POST["typeEmailX"],$_POST["typeNameX"],$_POST["typePasswordX"]);
+                $email->sendEmail($_POST["typeEmailX"],$_POST["typeNameX"],$_POST["typePasswordX"],$site);
         }
         return $this->redirectToRoute("app_login");
     }
@@ -272,6 +288,9 @@ class LoginController extends AbstractController
         if(isset($_SESSION["rol"]) and ($_SESSION["rol"] == 1 or $_SESSION["rol"] == 2)){
             if(isset($_POST["updateStire"])){
                 $articol = $stiriRepository->find($_POST["updateStire"]);
+                if($articol->getAutor()!=$_SESSION["nume"] and $_SESSION["rol"] != 2){
+                    die("Ne pare rau, dar nu aveti acces sa umblati la stirile altor oameni");
+                }
             }else {
                 $articol = new Stiri();
             }
@@ -333,8 +352,9 @@ class LoginController extends AbstractController
     {        try {
         session_start();
     }catch(\Exception $exception){}
-        if(isset($_SESSION["rol"]) and ($_SESSION["rol"] == 1 or $_SESSION["rol"] == 2)){
-        $stiriRepository->remove($stiriRepository->find($request->get("id")));
+        $stire = $stiriRepository->find($request->get("id"));
+        if(isset($_SESSION["rol"]) and (($_SESSION["rol"] == 1 and $stire->getAutor() == $_SESSION["nume"]) or $_SESSION["rol"] == 2)){
+        $stiriRepository->remove($stire);
         return $this->redirectToRoute('app_main');
         }
         return new Response("Nu aveti permisiune");
@@ -652,5 +672,12 @@ class LoginController extends AbstractController
             }
         }
         return new Response("Au fost importate.");
+    }
+    #[Route('/activeaza/{cod}', name: 'app_activate')]
+    public function Activate(\Symfony\Component\HttpFoundation\Request $request, AccountRepository $accountRepository){
+        $cont = $accountRepository->findOneBy(array("identificator"=>$request->get("cod")));
+        $cont->setIdentificator("activ");
+        $accountRepository->save($cont);
+        return $this->redirectToRoute("app_login");
     }
 }

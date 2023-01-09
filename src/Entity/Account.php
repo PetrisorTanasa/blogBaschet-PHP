@@ -25,6 +25,9 @@ class Account
     #[ORM\Column]
     private ?int $rol = null;
 
+    #[ORM\Column(length: 30)]
+    private ?string $identificator = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class Account
     public function setRol(int $rol): self
     {
         $this->rol = $rol;
+
+        return $this;
+    }
+
+    public function getIdentificator(): ?string
+    {
+        return $this->identificator;
+    }
+
+    public function setIdentificator(string $identificator): self
+    {
+        $this->identificator = $identificator;
 
         return $this;
     }
