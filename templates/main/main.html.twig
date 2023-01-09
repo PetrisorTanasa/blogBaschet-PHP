@@ -57,7 +57,7 @@
         <ul>
         <h4>Ultimele stiri din baschetul bucurestean</h4>
             {% for stire in stiri %}
-                <div onclick="location.href='{{ path('app_watch',{"id" : stire.id}) }}'" style = "border: 1px solid #000; word-break:break-all; margin:10px"><li style="width:500px;height:100%"><a href="{{ path('app_watch',{"id" : stire.id}) }}" style="margin:30px"><div><h2>{{ stire.titlu }}</h2><br><h4>
+                <div onclick="location.href='{{ path('app_watch',{"id" : stire.id}) }}'" style = "border: 1px solid #000; word-break:normal; margin:10px"><li style="width:500px;height:100%"><a href="{{ path('app_watch',{"id" : stire.id}) }}" style="margin:30px"><div><h2>{{ stire.titlu }}</h2><br><h4>
                                     {{ stire.rezumat | raw }}</h4><br>
                                 {% if stire.Poza1 is defined %}
                                     <img src="{{ stire.Poza1 }}" width="150px" style="margin:5px">

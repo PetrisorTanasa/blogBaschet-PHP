@@ -2,6 +2,7 @@
 
 use App\Kernel;
 
+if(isset($_SERVER["HTTP_REFERER"]) and $_SERVER["HTTP_REFERER"] != "http://www.baschet-bucurestean.herokuapp.com/")
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
 $trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? $_ENV['TRUSTED_PROXIES'] ?? false;
