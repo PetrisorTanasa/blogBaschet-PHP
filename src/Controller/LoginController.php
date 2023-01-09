@@ -550,7 +550,7 @@ class LoginController extends AbstractController
         $pieChart3->getData()->setArrayToDataTable(
             $stats3
         );
-        $pieChart3->getOptions()->setTitle('Statistici autori stiri');
+        $pieChart3->getOptions()->setTitle('Statistici utilizatori stiri');
         $pieChart3->getOptions()->setHeight(200);
         $pieChart3->getOptions()->setWidth(500);
         $pieChart3->getOptions()->getTitleTextStyle()->setBold(true);
