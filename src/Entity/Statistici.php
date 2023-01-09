@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\StatisticiRepository;
 use App\Repository\StatisticiVizitatoriRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StatisticiVizitatoriRepository::class)]
+#[ORM\Entity(repositoryClass: StatisticiRepository::class)]
 class Statistici
 {
     #[ORM\Id]
