@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\Comentarii;
+use App\Entity\StatisticiVizitatori;
 use App\Entity\Stiri;
 use App\Repository\AccountRepository;
 use App\Repository\ComentariiRepository;
+use App\Repository\StatisticiRepository;
 use App\Repository\StiriRepository;
 use CMEN\GoogleChartsBundle\GoogleCharts\Charts\PieChart;
 use http\Client\Request;
@@ -159,11 +161,17 @@ class LoginController extends AbstractController
         return $this->redirectToRoute("app_main");
     }
     #[Route('/', name: 'app_main')]
-    public function main(StiriRepository $stiriRepository): Response
+    public function main(StiriRepository $stiriRepository, StatisticiRepository $statisticiRepository): Response
     {
         try {
             session_start();
         }catch(\Exception $exception){}
+//        if(!isset($_SESSION["sistem"])){
+//            $_SESSION["sistem"] = $_SERVER["HTTP_SEC_CH_UA_PLATFORM"];
+//            $statistica
+//            $statistica = new StatisticiVizitatori();
+//            $statistica->set==
+//        }
         $stiri = $stiriRepository->findAll();
         if(isset($_SESSION["rol"]) and isset($_SESSION["nume"])) {
             return $this->render("main/main.html.twig", [
@@ -464,7 +472,7 @@ class LoginController extends AbstractController
         $pieChart->getData()->setArrayToDataTable(
             $stats
         );
-        $pieChart->getOptions()->setTitle('Statistici autori stiri');
+        $pieChart->getOptions()->setTitle('Statistici.php autori stiri');
         $pieChart->getOptions()->setHeight(200);
         $pieChart->getOptions()->setWidth(500);
         $pieChart->getOptions()->getTitleTextStyle()->setBold(true);
@@ -482,7 +490,7 @@ class LoginController extends AbstractController
         $pieChart2->getData()->setArrayToDataTable(
             $stats2
         );
-        $pieChart2->getOptions()->setTitle('Statistici autori comentarii');
+        $pieChart2->getOptions()->setTitle('Statistici.php autori comentarii');
         $pieChart2->getOptions()->setHeight(200);
         $pieChart2->getOptions()->setWidth(500);
         $pieChart2->getOptions()->getTitleTextStyle()->setBold(true);

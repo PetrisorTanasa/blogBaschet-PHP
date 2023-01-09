@@ -1,7 +1,7 @@
 <?php
 
 use App\Kernel;
-var_dump($_SERVER);
+
 if(isset($_SERVER["HTTP_REFERER"]) and ($_SERVER["HTTP_HOST"] != "baschet-bucurestean.herokuapp.com" and $_SERVER["HTTP_HOST"] != "127.0.0.1:8000")){
     echo $_SERVER["HTTP_HOST"];
     die();
