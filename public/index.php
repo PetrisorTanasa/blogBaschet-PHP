@@ -2,7 +2,7 @@
 
 use App\Kernel;
 
-if(isset($_SERVER["HTTP_REFERER"]) and ($_SERVER["HTTP_HOST"] != "www.baschet-bucurestean.herokuapp.com" and $_SERVER["HTTP_HOST"] != "127.0.0.1:8000")){
+if(isset($_SERVER["HTTP_REFERER"]) and ($_SERVER["HTTP_HOST"] != "baschet-bucurestean.herokuapp.com" and $_SERVER["HTTP_HOST"] != "127.0.0.1:8000")){
     echo $_SERVER["HTTP_HOST"];
     die();
 }
