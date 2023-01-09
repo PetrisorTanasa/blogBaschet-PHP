@@ -21,7 +21,7 @@ class StatisticiVizitatoriRepository extends ServiceEntityRepository
         parent::__construct($registry, StatisticiVizitatori::class);
     }
 
-    public function save(StatisticiVizitatori $entity, bool $flush = false): void
+    public function save(StatisticiVizitatori $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
 

@@ -9,6 +9,7 @@ use App\Entity\Stiri;
 use App\Repository\AccountRepository;
 use App\Repository\ComentariiRepository;
 use App\Repository\StatisticiRepository;
+use App\Repository\StatisticiVizitatoriRepository;
 use App\Repository\StiriRepository;
 use CMEN\GoogleChartsBundle\GoogleCharts\Charts\PieChart;
 use http\Client\Request;
@@ -161,17 +162,23 @@ class LoginController extends AbstractController
         return $this->redirectToRoute("app_main");
     }
     #[Route('/', name: 'app_main')]
-    public function main(StiriRepository $stiriRepository, StatisticiRepository $statisticiRepository): Response
+    public function main(StiriRepository $stiriRepository, StatisticiVizitatoriRepository $statisticiRepository): Response
     {
         try {
             session_start();
         }catch(\Exception $exception){}
-//        if(!isset($_SESSION["sistem"])){
-//            $_SESSION["sistem"] = $_SERVER["HTTP_SEC_CH_UA_PLATFORM"];
-//            $statistica
-//            $statistica = new StatisticiVizitatori();
-//            $statistica->set==
-//        }
+        if(!isset($_SESSION["sistem"])){
+            $_SESSION["sistem"] = $_SERVER["HTTP_SEC_CH_UA_PLATFORM"];
+            $statistica = $statisticiRepository->findOneBy(array("sistem"=>$_SESSION["sistem"]));
+            if(isset($statistica)){
+                $statistica->setCount($statistica->getCount()+1);
+            }else {
+                $statistica = new StatisticiVizitatori();
+                $statistica->setSistem($_SESSION["sistem"]);
+                $statistica->setCount(1);
+            }
+            $statisticiRepository->save($statistica);
+        }
         $stiri = $stiriRepository->findAll();
         if(isset($_SESSION["rol"]) and isset($_SESSION["nume"])) {
             return $this->render("main/main.html.twig", [
@@ -446,7 +453,7 @@ class LoginController extends AbstractController
         ]);
     }
     #[Route('/statistici', name: 'app_stats')]
-    public function Stats(ComentariiRepository $comentariiRepository, StiriRepository $stiriRepository){
+    public function Stats(ComentariiRepository $comentariiRepository, StiriRepository $stiriRepository, StatisticiVizitatoriRepository $statisticiVizitatoriRepository){
         $autoriStiri = [];
         foreach($stiriRepository->findAll() as $bucata){
             if(!array_key_exists($bucata->getAutor(),$autoriStiri)){
@@ -472,7 +479,7 @@ class LoginController extends AbstractController
         $pieChart->getData()->setArrayToDataTable(
             $stats
         );
-        $pieChart->getOptions()->setTitle('Statistici.php autori stiri');
+        $pieChart->getOptions()->setTitle('Statistici autori stiri');
         $pieChart->getOptions()->setHeight(200);
         $pieChart->getOptions()->setWidth(500);
         $pieChart->getOptions()->getTitleTextStyle()->setBold(true);
@@ -490,7 +497,7 @@ class LoginController extends AbstractController
         $pieChart2->getData()->setArrayToDataTable(
             $stats2
         );
-        $pieChart2->getOptions()->setTitle('Statistici.php autori comentarii');
+        $pieChart2->getOptions()->setTitle('Statistici autori comentarii');
         $pieChart2->getOptions()->setHeight(200);
         $pieChart2->getOptions()->setWidth(500);
         $pieChart2->getOptions()->getTitleTextStyle()->setBold(true);
@@ -498,9 +505,30 @@ class LoginController extends AbstractController
         $pieChart2->getOptions()->getTitleTextStyle()->setItalic(true);
         $pieChart2->getOptions()->getTitleTextStyle()->setFontName('Arial');
         $pieChart2->getOptions()->getTitleTextStyle()->setFontSize(20);
+
+        $stats3 = array(['Categories','Pie expense']);
+        $dispozitivele = $statisticiVizitatoriRepository->findAll();
+        foreach($dispozitivele as $dispozitive){
+            array_push($stats3,[$dispozitive->getSistem(),$dispozitive->getCount()]);
+        }
+
+        $pieChart3 = new PieChart();
+        $pieChart3->getData()->setArrayToDataTable(
+            $stats3
+        );
+        $pieChart3->getOptions()->setTitle('Statistici autori stiri');
+        $pieChart3->getOptions()->setHeight(200);
+        $pieChart3->getOptions()->setWidth(500);
+        $pieChart3->getOptions()->getTitleTextStyle()->setBold(true);
+        $pieChart3->getOptions()->getTitleTextStyle()->setColor('#009900');
+        $pieChart3->getOptions()->getTitleTextStyle()->setItalic(true);
+        $pieChart3->getOptions()->getTitleTextStyle()->setFontName('Arial');
+        $pieChart3->getOptions()->getTitleTextStyle()->setFontSize(20);
+
         return $this->render("main/stats.html.twig",[
             "piechart" => $pieChart,
-            "piechart2" => $pieChart2
+            "piechart2" => $pieChart2,
+            "piechart3" => $pieChart3
         ]);
     }
     #[Route('/importa_baschet_ro', name: 'app_import_baschetro')]
