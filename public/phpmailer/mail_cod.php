@@ -44,7 +44,11 @@ class EmailSend
       $mail->AddAddress($to, $nume);
 
       $mail->SetFrom('baschet.bucurestean@gmail.com', 'Baschet Bucurestean');
-      $mail->Subject = 'Noul tau cont!';
+      if($mesajFeedback == "feed") {
+        $mail->Subject = 'Noul tau cont!';
+      }else{
+        $mail->Subject = 'Feedback baschet-bucurestean';
+      }
       $mail->AltBody = 'To view this post you need a compatible HTML viewer!';
       $mail->MsgHTML($message);
       $mail->Send();
