@@ -438,56 +438,81 @@ class LoginController extends AbstractController
                 $sheet->setCellValue("F1", "Poza1");
                 $sheet->setCellValue("G1", "Poza2");
                 $sheet->setCellValue("H1", "Poza3");
-                $sheet->setCellValue("I1", "Dropdown poze");
+                $sheet->setCellValue("I1", "Identificator");
+                $sheet->setCellValue("J1", "Dropdown poze");
                 $stiri = $this->stiriRepository->findAll();
                 for ($i = 2; $i <= count($stiri) + 1; $i++) {
                     if($stiri[$i - 2]->getId()) {
                         $sheet->setCellValue("A" . $i, $stiri[$i - 2]->getId());
+                        $sheet->getStyle("A" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("A" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("A" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("A" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     if($stiri[$i - 2]->getTitlu()) {
                         $sheet->setCellValue("B" . $i, $stiri[$i - 2]->getTitlu());
+                        $sheet->getStyle("B" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("B" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("B" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("B" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     if($stiri[$i - 2]->getRezumat()) {
                         $sheet->setCellValue("C" . $i, $stiri[$i - 2]->getRezumat());
+                        $sheet->getStyle("C" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("C" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("C" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("C" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     if($stiri[$i - 2]->getText()) {
                         $sheet->setCellValue("D" . $i, $stiri[$i - 2]->getText());
+                        $sheet->getStyle("D" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("D" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("D" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("D" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     if($stiri[$i - 2]->getAutor()) {
                         $sheet->setCellValue("E" . $i, $stiri[$i - 2]->getAutor());
+                        $sheet->getStyle("E" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("E" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("E" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("E" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     if($stiri[$i - 2]->getPoza1()) {
                         $sheet->setCellValue("F" . $i, $stiri[$i - 2]->getPoza1());
+                        $sheet->getStyle("F" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("F" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("F" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("F" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     if($stiri[$i - 2]->getPoza2()) {
                         $sheet->setCellValue("G" . $i, $stiri[$i - 2]->getPoza2());
+                        $sheet->getStyle("G" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("G" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("G" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("G" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     if($stiri[$i - 2]->getPoza3()) {
                         $sheet->setCellValue("H" . $i, $stiri[$i - 2]->getPoza3());
+                        $sheet->getStyle("H" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("H" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
                     }else{
                         $sheet->getStyle("H" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
                         $sheet->getStyle("H" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getIdentificator()) {
+                        $sheet->setCellValue("I" . $i, $stiri[$i - 2]->getIdentificator());
+                        $sheet->getStyle("I" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("I" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_GREEN);
+                    }else{
+                        $sheet->getStyle("I" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("I" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     }
                     $verif1 = $stiri[$i - 2]->getPoza1();
                     $verif2 = $stiri[$i - 2]->getPoza2();
@@ -507,7 +532,7 @@ class LoginController extends AbstractController
 //                        $validation->setFormula1('"' . ($stiri[$i - 2]->getPoza1() ?? "Error") . "," . ($stiri[$i - 2]->getPoza2() ?? "Error") . '"');
 //                    $validation->setFormula1('"'.$verif1.', '.$verif2.', '.$verif3.'"');
 //                    echo '"'.$verif1.','.$verif2.','.$verif3.'"';
-                    $objValidation = $sheet->getCell('I' . $i)->getDataValidation();
+                    $objValidation = $sheet->getCell('J' . $i)->getDataValidation();
                     $objValidation->setType( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::TYPE_LIST );
                     $objValidation->setErrorStyle( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::STYLE_INFORMATION );
                     $objValidation->setAllowBlank(false);

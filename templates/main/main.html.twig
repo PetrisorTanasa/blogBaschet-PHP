@@ -88,6 +88,7 @@
                 </form>
             {% endif %}
             <iframe width="100%" height="625 px" src="{{ path('app_stats') }}"></iframe>
+            <div style="border-width: 2px;border-style: dashed;border-color: lightblue;">
             <form action="{{ path("app_feedback") }}" method="POST">
                 {% if rol is not defined %}
                     <label>Mail:<br><input name="email_feedback"/></label><br>
@@ -97,6 +98,7 @@
                     <label>Rating:<input type="range" min="1" max="5" step="1" name="rating"/></label><br>
                     <button type="submit">Trimite feedback!</button>
             </form>
+            </div>
         </div>
     </div>
 {% endblock %}
