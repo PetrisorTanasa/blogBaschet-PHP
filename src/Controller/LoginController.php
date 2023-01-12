@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\Comentarii;
+use App\Entity\Feedback;
 use App\Entity\StatisticiVizitatori;
 use App\Entity\Stiri;
 use App\Repository\AccountRepository;
 use App\Repository\ComentariiRepository;
+use App\Repository\FeedbackRepository;
 use App\Repository\StatisticiRepository;
 use App\Repository\StatisticiVizitatoriRepository;
 use App\Repository\StiriRepository;
@@ -16,6 +18,7 @@ use http\Client\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Style;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -118,6 +121,7 @@ class LoginController extends AbstractController
                     $_SESSION["loggedIn"] = 1;
                     $_SESSION["nume"] = $cont->getName();
                     $_SESSION["rol"] = $cont->getRol();
+                    $_SESSION["mail"] = $cont->getMail();
                     $_SESSION["incercare"] = 1;
                     return $this->redirectToRoute('app_main');
                 }else{
@@ -183,7 +187,6 @@ class LoginController extends AbstractController
         try {
             session_start();
         }catch(\Exception $exception){}
-        unset($_SESSION["sistem"]);
         if(!isset($_SESSION["sistem"])){
             $user_agent = $_SERVER['HTTP_USER_AGENT'];
             $os_platform  = "Unknown OS Platform";
@@ -233,12 +236,12 @@ class LoginController extends AbstractController
             return $this->render("main/main.html.twig", [
                 "nume" => $_SESSION["nume"],
                 "rol" => $_SESSION["rol"],
-                "stiri" => array($stiri[0],$stiri[1],$stiri[2])
+                "stiri" => array($stiri[0],$stiri[1])
             ]);
         }else{
             return $this->render("main/main.html.twig",[
                 "nume" => NULL,
-                "stiri" => array($stiri[0],$stiri[1],$stiri[2])
+                "stiri" => array($stiri[0],$stiri[1])
             ]);
         }
     }
@@ -293,11 +296,11 @@ class LoginController extends AbstractController
                 }
             }else {
                 $articol = new Stiri();
+                $articol -> setAutor($_SESSION["nume"]);
             }
             $articol -> setTitlu($_POST["titluArt"]);
             $articol -> setRezumat($_POST["rezumatArt"]);
             $articol -> setText($_POST["textArt"]);
-            $articol -> setAutor($_SESSION["nume"]);
             $articol -> setPoza1($_POST["poza1Art"]);
             $articol -> setPoza2($_POST["poza2Art"]);
             $articol -> setPoza3($_POST["poza3Art"]);
@@ -435,16 +438,87 @@ class LoginController extends AbstractController
                 $sheet->setCellValue("F1", "Poza1");
                 $sheet->setCellValue("G1", "Poza2");
                 $sheet->setCellValue("H1", "Poza3");
+                $sheet->setCellValue("I1", "Dropdown poze");
                 $stiri = $this->stiriRepository->findAll();
                 for ($i = 2; $i <= count($stiri) + 1; $i++) {
-                    $sheet->setCellValue("A" . $i, $stiri[$i - 2]->getId());
-                    $sheet->setCellValue("B" . $i, $stiri[$i - 2]->getTitlu());
-                    $sheet->setCellValue("C" . $i, $stiri[$i - 2]->getRezumat());
-                    $sheet->setCellValue("D" . $i, $stiri[$i - 2]->getText());
-                    $sheet->setCellValue("E" . $i, $stiri[$i - 2]->getAutor());
-                    $sheet->setCellValue("F" . $i, $stiri[$i - 2]->getPoza1());
-                    $sheet->setCellValue("G" . $i, $stiri[$i - 2]->getPoza2());
-                    $sheet->setCellValue("H" . $i, $stiri[$i - 2]->getPoza3());
+                    if($stiri[$i - 2]->getId()) {
+                        $sheet->setCellValue("A" . $i, $stiri[$i - 2]->getId());
+                    }else{
+                        $sheet->getStyle("A" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("A" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getTitlu()) {
+                        $sheet->setCellValue("B" . $i, $stiri[$i - 2]->getTitlu());
+                    }else{
+                        $sheet->getStyle("B" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("B" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getRezumat()) {
+                        $sheet->setCellValue("C" . $i, $stiri[$i - 2]->getRezumat());
+                    }else{
+                        $sheet->getStyle("C" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("C" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getText()) {
+                        $sheet->setCellValue("D" . $i, $stiri[$i - 2]->getText());
+                    }else{
+                        $sheet->getStyle("D" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("D" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getAutor()) {
+                        $sheet->setCellValue("E" . $i, $stiri[$i - 2]->getAutor());
+                    }else{
+                        $sheet->getStyle("E" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("E" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getPoza1()) {
+                        $sheet->setCellValue("F" . $i, $stiri[$i - 2]->getPoza1());
+                    }else{
+                        $sheet->getStyle("F" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("F" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getPoza2()) {
+                        $sheet->setCellValue("G" . $i, $stiri[$i - 2]->getPoza2());
+                    }else{
+                        $sheet->getStyle("G" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("G" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    if($stiri[$i - 2]->getPoza3()) {
+                        $sheet->setCellValue("H" . $i, $stiri[$i - 2]->getPoza3());
+                    }else{
+                        $sheet->getStyle("H" . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $sheet->getStyle("H" . $i)->getFill()->getStartColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    }
+                    $verif1 = $stiri[$i - 2]->getPoza1();
+                    $verif2 = $stiri[$i - 2]->getPoza2();
+                    if(is_null($verif1)){
+                        $verif1 = "Error";
+                    }
+                    if(is_null($verif2)){
+                        $verif2 = "Error";
+                    }
+//                    if(is_null($verif3)){
+//                        $verif3 = "Error";
+//                    }
+//                        $validation = $sheet->getCell('I' . $i)->getDataValidation();
+//
+//                        $validation->setType(\PhpOffice\PhpSpreadsheet\Cell\DataValidation::TYPE_LIST);
+//
+//                        $validation->setFormula1('"' . ($stiri[$i - 2]->getPoza1() ?? "Error") . "," . ($stiri[$i - 2]->getPoza2() ?? "Error") . '"');
+//                    $validation->setFormula1('"'.$verif1.', '.$verif2.', '.$verif3.'"');
+//                    echo '"'.$verif1.','.$verif2.','.$verif3.'"';
+                    $objValidation = $sheet->getCell('I' . $i)->getDataValidation();
+                    $objValidation->setType( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::TYPE_LIST );
+                    $objValidation->setErrorStyle( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::STYLE_INFORMATION );
+                    $objValidation->setAllowBlank(false);
+                    $objValidation->setShowInputMessage(true);
+                    $objValidation->setShowErrorMessage(true);
+                    $objValidation->setShowDropDown(true);
+                    $objValidation->setErrorTitle('Input error');
+                    $objValidation->setError('Value is not in list.');
+                    $objValidation->setPromptTitle('Pick from list');
+                    $objValidation->setPrompt('Please pick a value from the drop-down list.');
+                    $objValidation->setFormula1('"'.$verif1.','.$verif2.'"');
                 }
                 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
                 $fileName = 'stiri.xlsx';
@@ -587,6 +661,11 @@ class LoginController extends AbstractController
     }
     #[Route('/importa_baschet_ro', name: 'app_import_baschetro')]
     public function importBaschetRo(StiriRepository $stiriRepository){
+        try {
+            session_start();
+        } catch (\Exception $exception) {
+        }
+        if(isset($_SESSION["rol"]) and $_SESSION["rol"] == 2){
         for($i=10;$i>=1;$i--){
             $curl = curl_init();
 
@@ -614,18 +693,18 @@ class LoginController extends AbstractController
             unset($r[1]);
             unset($r[2]);
             unset($r[3]);
-            foreach($r as $link){
-                $linkul = explode('"',$link);
-                $stire = $stiriRepository->findOneBy(array("identificator"=>$linkul[0]));
-                if(isset($stire)){
+            foreach($r as $link) {
+                $linkul = explode('"', $link);
+                $stire = $stiriRepository->findOneBy(array("identificator" => $linkul[0]));
+                if (isset($stire)) {
                     continue;
                 }
-                    $stire = new Stiri();
+                $stire = new Stiri();
 
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://baschet.ro/liga-nationala-de-baschet-masculin/stiri/'  . $linkul[0],
+                    CURLOPT_URL => 'https://baschet.ro/liga-nationala-de-baschet-masculin/stiri/' . $linkul[0],
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -642,33 +721,34 @@ class LoginController extends AbstractController
 
                 curl_close($curl);
 
-                $titlu = explode("<h1>",$response);
-                $titlul = explode("</h1>",$titlu[2]);
+                $titlu = explode("<h1>", $response);
+                $titlul = explode("</h1>", $titlu[2]);
 
                 $stire->setTitlu($titlul[0]);
 
-                $rezumat = explode("<strong>",$response);
-                $rezumatul = explode("</strong>",$rezumat[1]);
+                $rezumat = explode("<strong>", $response);
+                $rezumatul = explode("</strong>", $rezumat[1]);
 
                 $stire->setRezumat($rezumatul[0]);
 
-                $descriere = explode("<div class=\"single-news-content\">",$response);
-                $descrierea = explode("</div>",$descriere[1]);
+                $descriere = explode("<div class=\"single-news-content\">", $response);
+                $descrierea = explode("</div>", $descriere[1]);
 
-                $autor = explode('<a href="https://baschet.ro/articole/autor/',$response);
-                $autorl = explode(">",$autor[2]);
-                $autorul = explode("</a>",$autorl[1]);
+                $autor = explode('<a href="https://baschet.ro/articole/autor/', $response);
+                $autorl = explode(">", $autor[2]);
+                $autorul = explode("</a>", $autorl[1]);
 
-                $poza = explode('<img src="https://www.baschet.ro/storage/',$descriere[1]);
-                $pozal = explode('alt="',$poza[1]);
+                $poza = explode('<img src="https://www.baschet.ro/storage/', $descriere[1]);
+                $pozal = explode('alt="', $poza[1]);
 
                 $stire->setText($descrierea[0]);
                 $stire->setIdentificator($linkul[0]);
-                $stire->setPoza1("https://www.baschet.ro/storage/" . substr(trim($pozal[0]),0,-1));
+                $stire->setPoza1("https://www.baschet.ro/storage/" . substr(trim($pozal[0]), 0, -1));
                 $stire->setPoza2("https://www.frbaschet.ro/public/storage/posts/September2022/66toscCpztJSBhafSwFf-largepost.jpg");
                 $stire->setAutor(substr($autorul[0], 0, -3));
 
                 $stiriRepository->save($stire);
+            }
             }
         }
         return new Response("Au fost importate.");
@@ -679,5 +759,38 @@ class LoginController extends AbstractController
         $cont->setIdentificator("activ");
         $accountRepository->save($cont);
         return $this->redirectToRoute("app_login");
+    }
+
+    #[Route('/feedback', name: 'app_feedback')]
+    public function feedbackPage(FeedbackRepository $feedbackRepository){
+        try {
+            session_start();
+        } catch (\Exception $exception) {
+        }
+        $email = new EmailSend();
+        $feedback = new Feedback();
+        if(isset($_SESSION["nume"])){
+            $check = $feedbackRepository->findOneBy(array("mail"=>$_SESSION["mail"]));
+            if(!isset($check)){
+                $email->sendEmail($_SESSION["mail"],$_SESSION["nume"],$_POST["rating"],"a",$_POST["feedback"]);
+                $feedback->setMail($_SESSION["mail"]);
+                $feedback->setFeedback($_POST["feedback"]);
+                $feedback->setNume($_SESSION["nume"]);
+                $feedback->setRating($_POST["rating"]);
+                $feedbackRepository->save($feedback);
+            }
+        }else{
+            $check = $feedbackRepository->findOneBy(array("mail"=>$_POST["email_feedback"]));
+            if(!isset($check)) {
+                $email->sendEmail($_POST["email_feedback"], $_POST["nume_feedback"], $_POST["rating"], "a", $_POST["feedback"]);
+                $feedback->setMail($_POST["email_feedback"]);
+                $feedback->setFeedback($_POST["feedback"]);
+                $feedback->setNume($_POST["nume_feedback"]);
+                $feedback->setRating($_POST["rating"]);
+                $feedbackRepository->save($feedback);
+            }
+        }
+
+        return $this->redirectToRoute("app_main");
     }
 }

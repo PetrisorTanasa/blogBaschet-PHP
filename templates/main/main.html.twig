@@ -87,7 +87,16 @@
                     <button type="submit" margin="20px">Importa baschet.ro</button>
                 </form>
             {% endif %}
-            <iframe width="100%" height="700 px" src="{{ path('app_stats') }}"></iframe>
+            <iframe width="100%" height="625 px" src="{{ path('app_stats') }}"></iframe>
+            <form action="{{ path("app_feedback") }}" method="POST">
+                {% if rol is not defined %}
+                    <label>Mail:<br><input name="email_feedback"/></label><br>
+                    <label>Nume:<br><input name="nume_feedback"/></label><br>
+                {% endif %}
+                    <label>Feedback:<br><textarea name="feedback"></textarea></label><br>
+                    <label>Rating:<input type="range" min="1" max="5" step="1" name="rating"/></label><br>
+                    <button type="submit">Trimite feedback!</button>
+            </form>
         </div>
     </div>
 {% endblock %}

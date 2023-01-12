@@ -58,7 +58,7 @@
             {% endif %}
             {% if rol is defined and rol == 2 %}
                 <li style="border-style: solid;border-width: 2px; margin-right:5px" class="nav-item">
-                    <a class="nav-link" href="{{ path('app_logout') }}">Creeaza cont</a>
+                    <a class="nav-link" href="{{ path('app_signup') }}">Creeaza cont</a>
                 </li>
             {% endif %}
             <li style="border-style: solid;border-width: 2px; margin-right:5px" class="nav-item">
@@ -89,7 +89,7 @@
                     <a class="dropdown-item" href="{{path('app_signup')}}">Sign up</a>
                     {% endif %}
                     {% if rol is defined and rol == 2 %}
-                    <a class="nav-link" href="{{ path('app_logout') }}">Creeaza cont</a>
+                    <a class="nav-link" href="{{ path('app_signup') }}">Creeaza cont</a>
                     {% endif %}
                     <a class="dropdown-item" href="{{ path('app_clasament') }}">Clasament</a>
                     <a class="dropdown-item" href="{{ path('app_stats') }}">Statistici</a>
